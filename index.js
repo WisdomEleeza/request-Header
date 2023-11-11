@@ -25,13 +25,15 @@ app.get('/api/hello', function (req, res) {
 });
 
 app.get('/api/whoami', (req, res) => {
-  const {ipaddress, language, software } = req.header.address
+  const ipaddress = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
+  const language = req.headers['accept-language'];
+  const software = req.headers['user-agent'];
 
   res.json({
     ipaddress: ipaddress,
     language: language,
     software: software
-  })
+  });
 
   /**
  * A request to /api/whoami should return a JSON object with your IP address in the ipaddress key.
@@ -45,9 +47,3 @@ app.get('/api/whoami', (req, res) => {
 var listener = app.listen(process.env.PORT || 3000, function () {
   console.log('Your app is listening on port ' + listener.address().port);
 });
-
-/**
- * A request to /api/whoami should return a JSON object with your IP address in the ipaddress key.
- * request to /api/whoami should return a JSON object with your preferred language in the language key.
- * request to /api/whoami should return a JSON object with your software in the software key.
- */
